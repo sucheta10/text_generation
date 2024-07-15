@@ -1,0 +1,28 @@
+!pip install transformers
+
+
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
+
+tokenizer = GPT2Tokenizer.from_pretrained("gpt2") # Loads the GPT-2 tokenizer pretrained on the "gpt2" model.
+model = GPT2LMHeadModel.from_pretrained("gpt2") # Loads the GPT-2 model itself, pretrained on the "gpt2" dataset. GPT2LMHeadModel is used here for language modeling tasks, where it predicts the likelihood of the next word given the previous words.
+
+
+
+text = "What is machine learning?"
+encoded_input = tokenizer.encode(text, return_tensors='pt') # Tokenizes and encodes the input text using the GPT-2 tokenizer. 
+                                                            # return_tensors='pt' ensures that the output is returned as PyTorch tensors.
+
+
+encoded_input
+
+# Decodes a specific token ID from the encoded input
+tokenizer.decode(encoded_input[0][2]) # encoded_input[0][2]: Accesses the third token in the encoded input tensor (encoded_input[0]), which corresponds to the word "Natural" in this case.
+
+output = model.generate(encoded_input, max_length=500,num_beams=5,no_repeat_ngram_size=2,early_stopping=True) # Generates text based on the encoded input using the GPT-2 model
+
+output
+
+tokenizer.decode(output[0], skip_special_tokens=True)# Decodes the generated output into human-readable text, skipping any special tokens.
+                                                     # output[0]- Accesses the first generated sequence (typically the best according to the model's scoring).
+                                                     # skip_special_tokens=True- Converts the token IDs in output[0] back into text, skipping any special tokens like <|endoftext|>.
